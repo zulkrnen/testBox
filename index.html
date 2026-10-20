@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Free-Roaming Eye Tracking</title>
+    <title>Clean & Balanced Eye Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="lottie-player.js"></script>
     <style>
@@ -31,7 +31,7 @@
             autoplay>
         </lottie-player>
 
-        <!-- Bold, large w-7 pupils positioned closer to visual center -->
+        <!-- Your exact manually tuned visual centers -->
         <div id="pupil-left" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 15%;"></div>
         <div id="pupil-right" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 29%;"></div>
 
@@ -59,26 +59,25 @@
             if (pLeft && pRight) {
                 const container = document.getElementById('cat-container');
                 const cRect = container.getBoundingClientRect();
-                const scale = cRect.width / 1080;
 
-                // Shifted artboard coordinates to correct the bottom-right bias
-                const leftEyeX = cRect.left + ((214.94 - 25) * scale);
-                const leftEyeY = cRect.top + ((304.74 - 25) * scale);
+                // Calculate exact pixel screen coordinates based directly on your clean visual layout percentages
+                const leftEyeX = cRect.left + (cRect.width * 0.15);
+                const leftEyeY = cRect.top + (cRect.height * 0.23);
                 
-                const rightEyeX = cRect.left + ((362.70 - 25) * scale);
-                const rightEyeY = cRect.top + ((304.74 - 25) * scale);
+                const rightEyeX = cRect.left + (cRect.width * 0.29);
+                const rightEyeY = cRect.top + (cRect.height * 0.23);
 
-                // Generous radius for full unrestricted roam inside the eyeball
-                const maxRadius = 18 * scale;
+                // Unrestricted, balanced movement radius (adjust this max distance if you want them to travel further)
+                const maxRadius = 14;
 
                 // Left Eye Tracking
                 const angleLeft = Math.atan2(mouse.y - leftEyeY, mouse.x - leftEyeX);
-                const distLeft = Math.min(maxRadius, Math.hypot(mouse.x - leftEyeX, mouse.y - leftEyeY) * 0.15);
+                const distLeft = Math.min(maxRadius, Math.hypot(mouse.x - leftEyeX, mouse.y - leftEyeY) * 0.12);
                 pLeft.style.transform = `translate(${Math.cos(angleLeft) * distLeft}px, ${Math.sin(angleLeft) * distLeft}px)`;
 
                 // Right Eye Tracking
                 const angleRight = Math.atan2(mouse.y - rightEyeY, mouse.x - rightEyeX);
-                const distRight = Math.min(maxRadius, Math.hypot(mouse.x - rightEyeY, mouse.y - rightEyeY) * 0.15);
+                const distRight = Math.min(maxRadius, Math.hypot(mouse.x - rightEyeY, mouse.y - rightEyeY) * 0.12);
                 pRight.style.transform = `translate(${Math.cos(angleRight) * distRight}px, ${Math.sin(angleRight) * distRight}px)`;
             }
             requestAnimationFrame(trackEyes);
