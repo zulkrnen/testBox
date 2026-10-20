@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precise Lottie Eye Tracking Sandbox</title>
+    <title>Engineered Lottie Eye Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Self-Hosted Local Lottie Player Script -->
     <script src="lottie-player.js"></script>
     <style>
         body {
@@ -20,10 +19,9 @@
 </head>
 <body>
 
-    <!-- Cat Container (Sized cleanly) -->
-    <div class="relative w-72 h-72 flex items-center justify-center">
+    <!-- Cat Container -->
+    <div id="cat-container" class="relative w-80 h-80 flex items-center justify-center">
         
-        <!-- Lottie Player -->
         <lottie-player 
             src="kittey.json" 
             background="transparent" 
@@ -33,9 +31,9 @@
             autoplay>
         </lottie-player>
 
-        <!-- Mathematically Calculated Pupils from 1080x1080 Artboard Coordinates -->
-        <div id="pupil-left" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 19.9%;"></div>
-        <div id="pupil-right" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 33.6%;"></div>
+        <!-- Nicer, thicker pupils sized proportionally -->
+        <div id="pupil-left" class="absolute w-3.5 h-3.5 bg-black rounded-full pointer-events-none transition-transform duration-75 ease-out" style="top: 28.2%; left: 19.9%;"></div>
+        <div id="pupil-right" class="absolute w-3.5 h-3.5 bg-black rounded-full pointer-events-none transition-transform duration-75 ease-out" style="top: 28.2%; left: 33.6%;"></div>
 
     </div>
 
@@ -59,20 +57,33 @@
             const pRight = document.getElementById('pupil-right');
 
             if (pLeft && pRight) {
-                // Left Eye Tracking
-                const rectLeft = pLeft.getBoundingClientRect();
-                const eyeLeftX = rectLeft.left + rectLeft.width / 2;
-                const eyeLeftY = rectLeft.top + rectLeft.height / 2;
+                // Calculate based on the container center to ensure top-left corner tracking works seamlessly
+                const container = document.getElementById('cat-container');
+                const cRect = container.getBoundingClientRect();
+                
+                // Absolute pixel centers of the eyes based on your 1080p layout mapped to current container width
+                const scale = cRect.width / 1080;
+                
+                // Native eye centers from 1080x1080 artboard
+                const leftEyeNativeX = 214.94;
+                const leftEyeNativeY = 304.74;
+                const rightEyeNativeX = 362.70;
+                const rightEyeNativeY = 304.74;
+
+                // Screen coordinates of the eye centers
+                const eyeLeftX = cRect.left + (leftEyeNativeX * scale);
+                const eyeLeftY = cRect.top + (leftEyeNativeY * scale);
+                const eyeRightX = cRect.left + (rightEyeNativeX * scale);
+                const eyeRightY = cRect.top + (rightEyeNativeY * scale);
+
+                // Left Eye Angle & Distance Clamp
                 const angleLeft = Math.atan2(mouse.y - eyeLeftY, mouse.x - eyeLeftX);
-                const distanceLeft = Math.min(3, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.04);
+                const distanceLeft = Math.min(6, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.06);
                 pLeft.style.transform = `translate(${Math.cos(angleLeft) * distanceLeft}px, ${Math.sin(angleLeft) * distanceLeft}px)`;
 
-                // Right Eye Tracking
-                const rectRight = pRight.getBoundingClientRect();
-                const eyeRightX = rectRight.left + rectRight.width / 2;
-                const eyeRightY = rectRight.top + rectRight.height / 2;
+                // Right Eye Angle & Distance Clamp
                 const angleRight = Math.atan2(mouse.y - eyeRightY, mouse.x - eyeRightX);
-                const distanceRight = Math.min(3, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.04);
+                const distanceRight = Math.min(6, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.06);
                 pRight.style.transform = `translate(${Math.cos(angleRight) * distanceRight}px, ${Math.sin(angleRight) * distanceRight}px)`;
             }
             requestAnimationFrame(trackEyes);
