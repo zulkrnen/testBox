@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free-Roaming Lottie Eye Tracking</title>
+    <title>Centered Free-Roaming Eye Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="lottie-player.js"></script>
     <style>
@@ -31,9 +31,9 @@
             autoplay>
         </lottie-player>
 
-        <!-- Bold, large pupils positioned at their exact starting centers -->
-        <div id="pupil-left" class="absolute w-5 h-5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 19.9%;"></div>
-        <div id="pupil-right" class="absolute w-5 h-5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 33.6%;"></div>
+        <!-- Bold, large w-7 pupils positioned closer to visual center -->
+        <div id="pupil-left" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 25.5%; left: 22.5%;"></div>
+        <div id="pupil-right" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 25.5%; left: 36.2%;"></div>
 
     </div>
 
@@ -61,22 +61,22 @@
                 const cRect = container.getBoundingClientRect();
                 const scale = cRect.width / 1080;
 
-                // Exact native eye centers
-                const leftEyeX = cRect.left + (214.94 * scale);
-                const leftEyeY = cRect.top + (304.74 * scale);
+                // Shifted artboard coordinates to correct the bottom-right bias
+                const leftEyeX = cRect.left + ((214.94 - 25) * scale);
+                const leftEyeY = cRect.top + ((304.74 - 25) * scale);
                 
-                const rightEyeX = cRect.left + (362.70 * scale);
-                const rightEyeY = cRect.top + (304.74 * scale);
+                const rightEyeX = cRect.left + ((362.70 - 25) * scale);
+                const rightEyeY = cRect.top + ((304.74 - 25) * scale);
 
-                // Maximum radius allowed before hitting the edge of the eye socket (generous bounds for full travel)
-                const maxRadius = 14 * scale;
+                // Generous radius for full unrestricted roam inside the eyeball
+                const maxRadius = 18 * scale;
 
-                // Left Eye Tracking (Unrestricted up to maxRadius)
+                // Left Eye Tracking
                 const angleLeft = Math.atan2(mouse.y - leftEyeY, mouse.x - leftEyeX);
                 const distLeft = Math.min(maxRadius, Math.hypot(mouse.x - leftEyeX, mouse.y - leftEyeY) * 0.15);
                 pLeft.style.transform = `translate(${Math.cos(angleLeft) * distLeft}px, ${Math.sin(angleLeft) * distLeft}px)`;
 
-                // Right Eye Tracking (Unrestricted up to maxRadius)
+                // Right Eye Tracking
                 const angleRight = Math.atan2(mouse.y - rightEyeY, mouse.x - rightEyeX);
                 const distRight = Math.min(maxRadius, Math.hypot(mouse.x - rightEyeY, mouse.y - rightEyeY) * 0.15);
                 pRight.style.transform = `translate(${Math.cos(angleRight) * distRight}px, ${Math.sin(angleRight) * distRight}px)`;
