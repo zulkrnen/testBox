@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottie JSON Eye Tracking Test</title>
+    <title>Lottie Local Self-Hosted Eye Tracking Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!-- Self-Hosted Local Lottie Player Script -->
+    <script src="lottie-player.js"></script>
     <style>
         body {
             background-color: #ffffff;
@@ -19,24 +20,23 @@
 </head>
 <body>
 
-    <!-- Main Box -->
-    <div class="relative w-64 h-64 flex items-center justify-center">
+    <!-- Large Cat Container -->
+    <div class="relative w-72 h-72 flex items-center justify-center">
         
-        <!-- Tight Inner Wrapper strictly sized to the cat asset -->
-        <div id="cat-wrapper" class="relative w-36 h-36 flex items-center justify-center">
-            <lottie-player 
-                src="kitty.json" 
-                background="transparent" 
-                speed="1" 
-                style="width: 100%; height: 100%;" 
-                loop 
-                autoplay>
-            </lottie-player>
+        <!-- Lottie Player -->
+        <lottie-player 
+            src="kitty.json" 
+            background="transparent" 
+            speed="1" 
+            style="width: 100%; height: 100%;" 
+            loop 
+            autoplay>
+        </lottie-player>
 
-            <!-- Recalibrated Pupil Coordinates inside the inner wrapper -->
-            <div id="pupil-left" class="absolute w-2 h-2 bg-black rounded-full pointer-events-none" style="top: 38%; left: 38%;"></div>
-            <div id="pupil-right" class="absolute w-2 h-2 bg-black rounded-full pointer-events-none" style="top: 38%; left: 60%;"></div>
-        </div>
+        <!-- Calibrated Pupils for w-72 h-72 Container -->
+        <!-- Adjust these percentages slightly if needed after checking -->
+        <div id="pupil-left" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 45.5%; left: 42.5%;"></div>
+        <div id="pupil-right" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 45.5%; left: 57.5%;"></div>
 
     </div>
 
@@ -65,8 +65,7 @@
                 const eyeLeftX = rectLeft.left + rectLeft.width / 2;
                 const eyeLeftY = rectLeft.top + rectLeft.height / 2;
                 const angleLeft = Math.atan2(mouse.y - eyeLeftY, mouse.x - eyeLeftX);
-                // Clamped short distance so it stays inside the eye socket
-                const distanceLeft = Math.min(2.5, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.04);
+                const distanceLeft = Math.min(3.5, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.04);
                 pLeft.style.transform = `translate(${Math.cos(angleLeft) * distanceLeft}px, ${Math.sin(angleLeft) * distanceLeft}px)`;
 
                 // Right Eye
@@ -74,7 +73,7 @@
                 const eyeRightX = rectRight.left + rectRight.width / 2;
                 const eyeRightY = rectRight.top + rectRight.height / 2;
                 const angleRight = Math.atan2(mouse.y - eyeRightY, mouse.x - eyeRightX);
-                const distanceRight = Math.min(2.5, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.04);
+                const distanceRight = Math.min(3.5, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.04);
                 pRight.style.transform = `translate(${Math.cos(angleRight) * distanceRight}px, ${Math.sin(angleRight) * distanceRight}px)`;
             }
             requestAnimationFrame(trackEyes);
