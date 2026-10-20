@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean & Balanced Eye Tracking</title>
+    <title>Precision Engineered Eye Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="lottie-player.js"></script>
     <style>
@@ -31,9 +31,9 @@
             autoplay>
         </lottie-player>
 
-        <!-- Your exact manually tuned visual centers -->
-        <div id="pupil-left" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 15%;"></div>
-        <div id="pupil-right" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 29%;"></div>
+        <!-- Pupils perfectly centered via -50% translation matching your exact visual percentages -->
+        <div id="pupil-left" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 15%; transform: translate(-50%, -50%);"></div>
+        <div id="pupil-right" class="absolute w-7 h-7 bg-black rounded-full pointer-events-none" style="top: 23%; left: 29%; transform: translate(-50%, -50%);"></div>
 
     </div>
 
@@ -60,25 +60,40 @@
                 const container = document.getElementById('cat-container');
                 const cRect = container.getBoundingClientRect();
 
-                // Calculate exact pixel screen coordinates based directly on your clean visual layout percentages
+                // Exact pixel centers of the eyes based on your confirmed layout percentages
                 const leftEyeX = cRect.left + (cRect.width * 0.15);
                 const leftEyeY = cRect.top + (cRect.height * 0.23);
                 
                 const rightEyeX = cRect.left + (cRect.width * 0.29);
                 const rightEyeY = cRect.top + (cRect.height * 0.23);
 
-                // Unrestricted, balanced movement radius (adjust this max distance if you want them to travel further)
-                const maxRadius = 14;
+                // Maximum travel radius (strictly bounded to prevent escaping the socket)
+                const maxRadius = cRect.width * 0.045; 
 
-                // Left Eye Tracking
-                const angleLeft = Math.atan2(mouse.y - leftEyeY, mouse.x - leftEyeX);
-                const distLeft = Math.min(maxRadius, Math.hypot(mouse.x - leftEyeX, mouse.y - leftEyeY) * 0.12);
-                pLeft.style.transform = `translate(${Math.cos(angleLeft) * distLeft}px, ${Math.sin(angleLeft) * distLeft}px)`;
+                // --- Left Eye Calculation ---
+                const dxLeft = mouse.x - leftEyeX;
+                const dyLeft = mouse.y - leftEyeY;
+                const distLeft = Math.hypot(dxLeft, dyLeft);
+                const angleLeft = Math.atan2(dyLeft, dxLeft);
+                
+                // Follows cursor up to maxRadius, then caps cleanly against the wall
+                const travelLeft = Math.min(maxRadius, distLeft);
+                const moveLeftX = Math.cos(angleLeft) * travelLeft;
+                const moveLeftY = Math.sin(angleLeft) * travelLeft;
 
-                // Right Eye Tracking
-                const angleRight = Math.atan2(mouse.y - rightEyeY, mouse.x - rightEyeX);
-                const distRight = Math.min(maxRadius, Math.hypot(mouse.x - rightEyeY, mouse.y - rightEyeY) * 0.12);
-                pRight.style.transform = `translate(${Math.cos(angleRight) * distRight}px, ${Math.sin(angleRight) * distRight}px)`;
+                // --- Right Eye Calculation ---
+                const dxRight = mouse.x - rightEyeX;
+                const dyRight = mouse.y - rightEyeY;
+                const distRight = Math.hypot(dxRight, dyRight);
+                const angleRight = Math.atan2(dyRight, dxRight);
+                
+                const travelRight = Math.min(maxRadius, distRight);
+                const moveRightX = Math.cos(angleRight) * travelRight;
+                const moveRightY = Math.sin(angleRight) * travelRight;
+
+                // Apply transforms preserving the center alignment (-50%, -50%)
+                pLeft.style.transform = `translate(calc(-50% + ${moveLeftX}px), calc(-50% + ${moveLeftY}px))`;
+                pRight.style.transform = `translate(calc(-50% + ${moveRightX}px), calc(-50% + ${moveRightY}px))`;
             }
             requestAnimationFrame(trackEyes);
         }
