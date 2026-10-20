@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottie Eye Tracking Test</title>
-    <!-- Tailwind CSS for styling -->
+    <title>Lottie JSON Eye Tracking Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- DotLottie Player Component Script -->
-    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <!-- Standard Lottie Web Player -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         body {
             background-color: #ffffff;
@@ -21,39 +20,28 @@
 </head>
 <body>
 
-    <!-- Cat Container (Centered) -->
-    <div id="cat-container" class="relative w-48 h-48 flex items-center justify-center">
-        <!-- DotLottie Player rendering your file -->
-        <dotlottie-player 
-            src="kitty_blankeye.lottie" 
+    <div id="cat-container" class="relative w-64 h-64 flex items-center justify-center">
+        <!-- Pointing directly to the raw JSON file -->
+        <lottie-player 
+            src="kitty.json" 
             background="transparent" 
             speed="1" 
             style="width: 100%; height: 100%;" 
             loop 
             autoplay>
-        </dotlottie-player>
+        </lottie-player>
 
-        <!-- Custom Black Pupils Positioned Over the White Eye Sockets -->
-        <!-- Adjust top/left percentages if your Lottie layout padding differs slightly -->
-        <div id="pupil-left" class="absolute w-2 h-2 bg-black rounded-full pointer-events-none" style="top: 47%; left: 39%;"></div>
-        <div id="pupil-right" class="absolute w-2 h-2 bg-black rounded-full pointer-events-none" style="top: 47%; left: 61%;"></div>
+        <!-- Custom Black Pupils -->
+        <div id="pupil-left" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 47%; left: 39%;"></div>
+        <div id="pupil-right" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 47%; left: 61%;"></div>
     </div>
 
     <script>
         let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-        // Track global mouse movement
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
-        });
-
-        // Touch support for mobile/tablets
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                mouse.x = e.touches[0].clientX;
-                mouse.y = e.touches[0].clientY;
-            }
         });
 
         function trackEyes() {
@@ -61,37 +49,23 @@
             const pRight = document.getElementById('pupil-right');
 
             if (pLeft && pRight) {
-                // Calculate position for left eye
                 const rectLeft = pLeft.getBoundingClientRect();
                 const eyeLeftX = rectLeft.left + rectLeft.width / 2;
                 const eyeLeftY = rectLeft.top + rectLeft.height / 2;
-
                 const angleLeft = Math.atan2(mouse.y - eyeLeftY, mouse.x - eyeLeftX);
-                const distanceLeft = Math.min(3.5, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.05);
-                
-                const shiftLeftX = Math.cos(angleLeft) * distanceLeft;
-                const shiftLeftY = Math.sin(angleLeft) * distanceLeft;
+                const distanceLeft = Math.min(4, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.05);
+                pLeft.style.transform = `translate(${Math.cos(angleLeft) * distanceLeft}px, ${Math.sin(angleLeft) * distanceLeft}px)`;
 
-                pLeft.style.transform = `translate(${shiftLeftX}px, ${shiftLeftY}px)`;
-
-                // Calculate position for right eye
                 const rectRight = pRight.getBoundingClientRect();
                 const eyeRightX = rectRight.left + rectRight.width / 2;
                 const eyeRightY = rectRight.top + rectRight.height / 2;
-
                 const angleRight = Math.atan2(mouse.y - eyeRightY, mouse.x - eyeRightX);
-                const distanceRight = Math.min(3.5, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.05);
-
-                const shiftRightX = Math.cos(angleRight) * distanceRight;
-                const shiftRightY = Math.sin(angleRight) * distanceRight;
-
-                pRight.style.transform = `translate(${shiftRightX}px, ${shiftRightY}px)`;
+                const distanceRight = Math.min(4, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.05);
+                pRight.style.transform = `translate(${Math.cos(angleRight) * distanceRight}px, ${Math.sin(angleRight) * distanceRight}px)`;
             }
-
             requestAnimationFrame(trackEyes);
         }
 
-        // Start tracking loop
         requestAnimationFrame(trackEyes);
     </script>
 </body>
