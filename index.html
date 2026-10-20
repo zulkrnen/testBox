@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottie Local Self-Hosted Eye Tracking Test</title>
+    <title>Precise Lottie Eye Tracking Sandbox</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Self-Hosted Local Lottie Player Script -->
     <script src="lottie-player.js"></script>
@@ -20,12 +20,12 @@
 </head>
 <body>
 
-    <!-- Large Cat Container -->
+    <!-- Cat Container (Sized cleanly) -->
     <div class="relative w-72 h-72 flex items-center justify-center">
         
         <!-- Lottie Player -->
         <lottie-player 
-            src="kitty.json" 
+            src="kittey.json" 
             background="transparent" 
             speed="1" 
             style="width: 100%; height: 100%;" 
@@ -33,10 +33,9 @@
             autoplay>
         </lottie-player>
 
-        <!-- Calibrated Pupils for w-72 h-72 Container -->
-        <!-- Adjust these percentages slightly if needed after checking -->
-        <div id="pupil-left" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 45.5%; left: 42.5%;"></div>
-        <div id="pupil-right" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 45.5%; left: 57.5%;"></div>
+        <!-- Mathematically Calculated Pupils from 1080x1080 Artboard Coordinates -->
+        <div id="pupil-left" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 19.9%;"></div>
+        <div id="pupil-right" class="absolute w-2.5 h-2.5 bg-black rounded-full pointer-events-none" style="top: 28.2%; left: 33.6%;"></div>
 
     </div>
 
@@ -60,20 +59,20 @@
             const pRight = document.getElementById('pupil-right');
 
             if (pLeft && pRight) {
-                // Left Eye
+                // Left Eye Tracking
                 const rectLeft = pLeft.getBoundingClientRect();
                 const eyeLeftX = rectLeft.left + rectLeft.width / 2;
                 const eyeLeftY = rectLeft.top + rectLeft.height / 2;
                 const angleLeft = Math.atan2(mouse.y - eyeLeftY, mouse.x - eyeLeftX);
-                const distanceLeft = Math.min(3.5, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.04);
+                const distanceLeft = Math.min(3, Math.hypot(mouse.x - eyeLeftX, mouse.y - eyeLeftY) * 0.04);
                 pLeft.style.transform = `translate(${Math.cos(angleLeft) * distanceLeft}px, ${Math.sin(angleLeft) * distanceLeft}px)`;
 
-                // Right Eye
+                // Right Eye Tracking
                 const rectRight = pRight.getBoundingClientRect();
                 const eyeRightX = rectRight.left + rectRight.width / 2;
                 const eyeRightY = rectRight.top + rectRight.height / 2;
                 const angleRight = Math.atan2(mouse.y - eyeRightY, mouse.x - eyeRightX);
-                const distanceRight = Math.min(3.5, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.04);
+                const distanceRight = Math.min(3, Math.hypot(mouse.x - eyeRightX, mouse.y - eyeRightY) * 0.04);
                 pRight.style.transform = `translate(${Math.cos(angleRight) * distanceRight}px, ${Math.sin(angleRight) * distanceRight}px)`;
             }
             requestAnimationFrame(trackEyes);
